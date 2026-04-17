@@ -21,9 +21,14 @@ def plot_scatter(kmeans):
     plt.close()
 
 
+def get_data() -> list:
+    r = list(zip(x, y))
+    return r
+
+
 def main():
     print('main')
-    data = list(zip(x, y))
+    data = get_data()
     inertias = []
 
     for i in range(1, len(data)+1):
