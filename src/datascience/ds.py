@@ -34,18 +34,17 @@ def main():
     data = get_data()
     inertias = []
 
+    k: list[KMeans] = []
+
     r = range(1, len(data))
 
     for i in r:
-        kmeans = KMeans(n_clusters=i)
-        kmeans.fit(data)
-        inertias.append(kmeans.inertia_)
-
-    kmeans = KMeans(n_clusters=2)
-    kmeans.fit(data)
+        k.append(KMeans(n_clusters=i))
+        k[-1].fit(data)
+        inertias.append(k[-1].inertia_)
 
     plot_elbow(inertias=inertias)
-    plot_scatter(kmeans=kmeans)
+    plot_scatter(kmeans=k[1])
 
 
 if __name__ == '__main__':
