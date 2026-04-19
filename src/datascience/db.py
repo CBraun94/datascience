@@ -12,7 +12,8 @@ class DataFrame():
 
     def write(self, path: str):
         if self.df is not None:
-            self.df.write_excel(workbook=path + '/dataframe.xlsx', worksheet='DataFrame')
+            _fpath = path + '/dataframe.xlsx'
+            self.df.write_excel(workbook=_fpath, worksheet='DataFrame')
 
     def read(self, path: str):
         import os
@@ -37,6 +38,8 @@ def main():
     df = DataFrame('test')
 
     df.read(OUT)
+
+    #df.df = get_test_df()
 
     print(df.df)
 
