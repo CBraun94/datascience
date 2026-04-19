@@ -30,7 +30,20 @@ def get_data() -> list:
 
 
 def elbow():
-    print('elbow')
+    data = get_data()
+    inertias = []
+
+    k: list[KMeans] = []
+
+    r = range(1, len(data))
+
+    for i in r:
+        k.append(KMeans(n_clusters=i))
+        k[-1].fit(data)
+        inertias.append(k[-1].inertia_)
+
+    plot_elbow(inertias=inertias)
+    plot_scatter(kmeans=k[1])
 
 
 def two():
@@ -48,26 +61,13 @@ def two():
         score = silhouette_score(scaled_features, kmeans.labels_)
         silhouette_coefficients.append(score)
 
-    plot_elbow(inertias=inertias)
-    plot_scatter(kmeans=k[1])
+    
+    
 
 
 def main():
     print('main')
-    data = get_data()
-    inertias = []
-
-    k: list[KMeans] = []
-
-    r = range(1, len(data))
-
-    for i in r:
-        k.append(KMeans(n_clusters=i))
-        k[-1].fit(data)
-        inertias.append(k[-1].inertia_)
-
-
-
+    elbow()
 
 
 if __name__ == '__main__':
