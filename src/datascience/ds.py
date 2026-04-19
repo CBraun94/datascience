@@ -1,9 +1,13 @@
 import matplotlib.pyplot as plt
-from sklearn.cluster import KMeans 
+from sklearn.cluster import KMeans
+import numpy as np
 
 
-x = [4, 5, 10, 4, 3, 11, 14, 6, 10, 12]
-y = [21, 19, 24, 17, 16, 25, 24, 22, 21, 21]
+# https://realpython.com/k-means-clustering-python/
+
+
+_x = [4, 5, 10, 4, 3, 11, 14, 6, 10, 12]
+_y = [21, 19, 24, 17, 16, 25, 24, 22, 21, 21]
 
 DIR_OUT = r'data/output/'
 
@@ -18,14 +22,22 @@ def plot_elbow(inertias: list):
     plt.close()
 
 
-def plot_scatter(kmeans):
+def plot_scatter(kmeans, x, y):
     plt.scatter(x, y, c=kmeans.labels_)
     plt.savefig(fname=DIR_OUT+'kmeans_scatter')
     plt.close()
 
 
-def get_data() -> list:
-    r = list(zip(x, y))
+def get_data():
+    r = None
+    from . import db
+    df = db.DataFrame('test')
+    df.read(db.OUT)
+    if df.df is not None:
+        r = df.df.to_numpy()
+        print(r)
+    else:
+        r = list(zip(_x, _y))
     return r
 
 
@@ -43,7 +55,7 @@ def elbow():
         inertias.append(k[-1].inertia_)
 
     plot_elbow(inertias=inertias)
-    plot_scatter(kmeans=k[1])
+    plot_scatter(kmeans=k[2], x=data[:, 0], y=data[:, 1])
 
 
 def two():
@@ -61,8 +73,6 @@ def two():
         score = silhouette_score(scaled_features, kmeans.labels_)
         silhouette_coefficients.append(score)
 
-    
-    
 
 
 def main():

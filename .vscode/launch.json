@@ -1,0 +1,20 @@
+{
+    "configurations": [
+        {
+            "name": "Python Debugger: Python File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}"
+        },
+        {
+            "name": "Python Debugger: Module",
+            "type": "debugpy",
+            "request": "launch",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "module": "datascience",
+            "args": []
+        },
+    ]
+}
