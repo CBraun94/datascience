@@ -22,9 +22,9 @@ def plot_elbow(inertias: list):
     plt.close()
 
 
-def plot_scatter(kmeans, x, y):
+def plot_scatter(kmeans, x, y, name: str):
     plt.scatter(x, y, c=kmeans.labels_)
-    plt.savefig(fname=DIR_OUT+'kmeans_scatter')
+    plt.savefig(fname=DIR_OUT+name)
     plt.close()
 
 
@@ -55,7 +55,9 @@ def elbow():
         inertias.append(k[-1].inertia_)
 
     plot_elbow(inertias=inertias)
-    plot_scatter(kmeans=k[2], x=data[:, 0], y=data[:, 1])
+    plot_scatter(kmeans=k[7], x=data[:, 0], y=data[:, 1], name='xy')
+    plot_scatter(kmeans=k[7], x=data[:, 0], y=data[:, 2], name='xz')
+    plot_scatter(kmeans=k[7], x=data[:, 2], y=data[:, 1], name='zy')
 
 
 def two():
