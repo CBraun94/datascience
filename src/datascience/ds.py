@@ -33,6 +33,7 @@ def get_data():
     from . import db
     df = db.DataFrame('test')
     df.read(db.OUT)
+    df.write(db.OUT)
     if df.df is not None:
         r = df.df.to_numpy()
         print(r)
@@ -74,7 +75,6 @@ def two():
         kmeans.fit(scaled_features)
         score = silhouette_score(scaled_features, kmeans.labels_)
         silhouette_coefficients.append(score)
-
 
 
 def main():
