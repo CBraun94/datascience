@@ -3,6 +3,8 @@ from matplotlib.ticker import MaxNLocator
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 import numpy as np
+import pandas as pd
+import polars as pl
 
 
 # https://realpython.com/k-means-clustering-python/
@@ -113,6 +115,13 @@ def sil():
     plot_scatter(kmeans=k[index], x=data[:, 0], y=data[:, 1], filename='xy', xlabel=columns[0], ylabel=columns[1])
     plot_scatter(kmeans=k[index], x=data[:, 0], y=data[:, 2], filename='xz', xlabel=columns[0], ylabel=columns[2])
     plot_scatter(kmeans=k[index], x=data[:, 2], y=data[:, 1], filename='zy', xlabel=columns[2], ylabel=columns[1])
+
+    df_data = {columns[0]: data[:, 0], columns[1]: data[:, 1], columns[2]: data[:, 2], 'cluster': k[index].labels_}
+    df = pd.DataFrame(data=df_data).sort_values(by=["cluster"])
+
+    print(df)
+
+    df.to_excel(DIR_OUT+"output.xlsx", sheet_name="Sheet_name_1")
 
 
 def two():
