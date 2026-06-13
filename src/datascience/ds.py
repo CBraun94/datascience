@@ -18,9 +18,11 @@ DIR_OUT = r'data/output/'
 PLT_STYLE = 'dark_background'
 
 
-def plot_elbow(inertias: list):
+def plot_elbow(inertias: list, fig=None, ax=None):
     r = range(1, len(inertias)+1)
     plt.style.use(PLT_STYLE)
+    if fig is None or ax is None:
+        fig, ax = plt.subplots()
     plt.plot(r, inertias, marker='o')
     plt.title('Elbow method')
     plt.xlabel('Number of clusters')
@@ -29,8 +31,10 @@ def plot_elbow(inertias: list):
     plt.close()
 
 
-def plot_sil(l_index: list, sil_score: list):
+def plot_sil(l_index: list, sil_score: list, fig=None, ax=None):
     plt.style.use(PLT_STYLE)
+    if fig is None or ax is None:
+        fig, ax = plt.subplots()
     plt.plot(l_index, sil_score, marker='o')
     plt.title('silhouette_score')
     plt.xlabel('Number of clusters')
@@ -40,9 +44,10 @@ def plot_sil(l_index: list, sil_score: list):
     plt.close()
 
 
-def plot_scatter(kmeans, x, y, filename: str, title = None, xlabel = None, ylabel = None):
+def plot_scatter(kmeans, x, y, filename: str, fig=None, ax=None, title=None, xlabel=None, ylabel=None):
     plt.style.use(PLT_STYLE)
-    fig, ax = plt.subplots()
+    if fig is None or ax is None:
+        fig, ax = plt.subplots()
     ax.scatter(x, y, c=kmeans.labels_)
     ax.set_title(title)
     ax.set_xlabel(xlabel)
@@ -54,7 +59,7 @@ def plot_scatter(kmeans, x, y, filename: str, title = None, xlabel = None, ylabe
         fig.savefig(fname=DIR_OUT+filename)
 
 
-def plot_analyze_sil():
+def plot_analyze_sil(df: pl.DataFrame):
     # https://matplotlib.org/stable/gallery/subplots_axes_and_figures/subplots_demo.html
     filename = 'plot_analyze_sil'
     plt.style.use(PLT_STYLE)
@@ -68,7 +73,8 @@ def plot_analyze_sil():
         fig.savefig(fname=DIR_OUT+filename)
 
 
-def get_data():
+def get_data() -> pl.DataFrame:
+    r = None
     _data = None
     _columns = None
     import db
@@ -78,10 +84,11 @@ def get_data():
     if df.df is not None:
         _data = df.df.to_numpy()
         _columns = df.df.columns
-        print(_data)
+        r = df.df
     else:
         _data = list(zip(_x, _y))
-    return _columns, _data
+    #return _columns, _data
+    return r
 
 
 def elbow():
@@ -104,7 +111,10 @@ def elbow():
 
 
 def sil():
-    columns, data = get_data()
+    df = get_data()
+    columns = df.columns
+    data = df.to_numpy()
+
     inertias = []
     sil_score = []
 
@@ -125,9 +135,14 @@ def sil():
 
     index = sil_score.index(max(sil_score))
 
+    s = pl.Series(name='cluster', values=k[index].labels_)
+    df = df.insert_column(0, s)
+
+    print(df)
+
     analyze_sil(inertias=inertias, l_index=l_index, sil_score=sil_score, k=k, data=data, columns=columns, index=index)
 
-    plot_analyze_sil()
+    plot_analyze_sil(df)
 
 
 def analyze_sil(inertias, l_index, sil_score, k, data, columns, index):
