@@ -3,6 +3,7 @@ from typing import Dict
 
 
 OUT = r'/home/chris/dev/datascience/data/output'
+IN = r'/home/chris/dev/datascience/data/input'
 DF_XLSX = '/dataframe.xlsx'
 DF = 'DataFrame'
 

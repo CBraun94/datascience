@@ -3,6 +3,7 @@ DEBUG_PRINT = False
 
 # IO
 DIR_OUT = r'data/output/'
+DIR_IN = r'data/input/'
 SHEETNAME_OUT = "Sheet_name_1"
 
 # DS/DF

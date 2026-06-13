@@ -17,7 +17,7 @@ def get_data() -> pl.DataFrame:
     r = None
     import db
     df = db.DataFrame(_c.DF_DS_NAME)
-    df.read(db.OUT)
+    df.read(db.IN)
     df.write(db.OUT)
     if df.df is not None:
         r = df.df
