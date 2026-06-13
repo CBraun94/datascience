@@ -13,6 +13,8 @@ _y = [21, 19, 24, 17, 16, 25, 24, 22, 21, 21]
 
 DIR_OUT = r'data/output/'
 
+CLUSTER = 'cluster'
+
 
 def get_data() -> pl.DataFrame:
     r = None
@@ -69,7 +71,7 @@ def sil():
 
     index = sil_score.index(max(sil_score))
 
-    s = pl.Series(name='cluster', values=k[index].labels_)
+    s = pl.Series(name=CLUSTER, values=k[index].labels_)
     df = df.insert_column(0, s)
 
     print(df)
@@ -86,14 +88,14 @@ def analyze_sil(inertias, l_index, sil_score, k, data, columns, index):
     p.plot_scatter(kmeans=k[index], x=data[:, 0], y=data[:, 2], filename='xz', xlabel=columns[0], ylabel=columns[2])
     p.plot_scatter(kmeans=k[index], x=data[:, 2], y=data[:, 1], filename='zy', xlabel=columns[2], ylabel=columns[1])
 
-    df_data = {columns[0]: data[:, 0], columns[1]: data[:, 1], columns[2]: data[:, 2], 'cluster': k[index].labels_}
-    df = pd.DataFrame(data=df_data).sort_values(by=["cluster"])
+    df_data = {columns[0]: data[:, 0], columns[1]: data[:, 1], columns[2]: data[:, 2], CLUSTER: k[index].labels_}
+    df = pd.DataFrame(data=df_data).sort_values(by=[CLUSTER])
 
     print(pl.from_pandas(df))
 
     df.to_excel(DIR_OUT+"output.xlsx", sheet_name="Sheet_name_1")
 
-    df_m = df.groupby('cluster').mean()
+    df_m = df.groupby(CLUSTER).mean()
     #df_m = df.groupby('cluster').agg(['mean', 'count'])
 
     print(pl.from_pandas(df_m))
