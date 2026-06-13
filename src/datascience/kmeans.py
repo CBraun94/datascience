@@ -43,8 +43,9 @@ def elbow():
     p.plot_scatter(kmeans=k[7], x=data[:, 2], y=data[:, 1], filename='zy', xlabel=columns[2], ylabel=columns[1])
 
 
-def sil():
-    df = get_data()
+def sil(df: pl.DataFrame = None):
+    if df is None:
+        df = get_data()
     columns = df.columns
     data = df.to_numpy()
 
