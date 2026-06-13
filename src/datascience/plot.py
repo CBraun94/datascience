@@ -39,11 +39,11 @@ def plot_sil(l_index: list, sil_score: list, fig=None, ax=None):
     plt.close()
 
 
-def plot_scatter(kmeans, x, y, filename: str, fig=None, ax=None, title=None, xlabel=None, ylabel=None):
+def plot_scatter(color, x, y, filename: str, fig=None, ax=None, title=None, xlabel=None, ylabel=None):
     plt.style.use(PLT_STYLE)
     if fig is None or ax is None:
         fig, ax = plt.subplots()
-    ax.scatter(x, y, c=kmeans.labels_)
+    ax.scatter(x, y, c=color)
     ax.set_title(title)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
@@ -54,9 +54,9 @@ def plot_scatter(kmeans, x, y, filename: str, fig=None, ax=None, title=None, xla
         fig.savefig(fname=DIR_OUT+filename)
 
 
-def plot_analyze_sil(df: pl.DataFrame, df_data_clustered: pl.DataFrame, kmeans):
+def plot_analyze_sil(df: pl.DataFrame, df_data_clustered: pl.DataFrame, kmeans, filename):
     # https://matplotlib.org/stable/gallery/subplots_axes_and_figures/subplots_demo.html
-    filename = 'plot_analyze_sil'
+
     plt.style.use(PLT_STYLE)
     fig = plt.figure()
     fig.suptitle('plot_analyze_sil')
@@ -68,9 +68,11 @@ def plot_analyze_sil(df: pl.DataFrame, df_data_clustered: pl.DataFrame, kmeans):
     _y = df_data_clustered.to_series(df_data_clustered.get_column_index('Source_Two')).to_list()
     _z = df_data_clustered.to_series(df_data_clustered.get_column_index('Source_Three')).to_list()
 
-    plot_scatter(kmeans=kmeans, x=_x, y=_y, filename='xy', fig=fig, ax=ax4, title='xy', xlabel='Source_One', ylabel='Source_Two')
-    plot_scatter(kmeans=kmeans, x=_x, y=_z, filename='xz', fig=fig, ax=ax5, title='xz', xlabel='Source_One', ylabel='Source_Three')
-    plot_scatter(kmeans=kmeans, x=_z, y=_y, filename='zy', fig=fig, ax=ax6, title='zy', xlabel='Source_Three', ylabel='Source_Two')
+    _color = df_data_clustered.to_series(df_data_clustered.get_column_index('cluster')).to_list()
+
+    plot_scatter(color=None, x=_x, y=_y, filename='xy', fig=fig, ax=ax4, title='xy', xlabel='Source_One', ylabel='Source_Two')
+    plot_scatter(color=None, x=_x, y=_z, filename='xz', fig=fig, ax=ax5, title='xz', xlabel='Source_One', ylabel='Source_Three')
+    plot_scatter(color=None, x=_z, y=_y, filename='zy', fig=fig, ax=ax6, title='zy', xlabel='Source_Three', ylabel='Source_Two')
 
     fig.tight_layout()
 

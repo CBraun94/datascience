@@ -82,15 +82,20 @@ def sil():
 
     analyze_sil(inertias=inertias, l_index=l_index, sil_score=sil_score, k=k, data=data, columns=columns, index=index)
 
-    p.plot_analyze_sil(df, df_data_clustered, k[index])
+    r = range(0, index)
+
+    for i in r:
+        df_to_plot = df_data_clustered.filter(pl.col(CLUSTER) == i)
+
+        p.plot_analyze_sil(df, df_to_plot, k[index], filename='analyze_sil_cluster_'+str(i))
 
 
 def analyze_sil(inertias, l_index, sil_score, k, data, columns, index):
     p.plot_elbow(inertias=inertias)
     p.plot_sil(l_index=l_index, sil_score=sil_score)
-    p.plot_scatter(kmeans=k[index], x=data[:, 0], y=data[:, 1], filename='xy', xlabel=columns[0], ylabel=columns[1])
-    p.plot_scatter(kmeans=k[index], x=data[:, 0], y=data[:, 2], filename='xz', xlabel=columns[0], ylabel=columns[2])
-    p.plot_scatter(kmeans=k[index], x=data[:, 2], y=data[:, 1], filename='zy', xlabel=columns[2], ylabel=columns[1])
+    p.plot_scatter(color=k[index].labels_, x=data[:, 0], y=data[:, 1], filename='xy', xlabel=columns[0], ylabel=columns[1])
+    p.plot_scatter(color=k[index].labels_, x=data[:, 0], y=data[:, 2], filename='xz', xlabel=columns[0], ylabel=columns[2])
+    p.plot_scatter(color=k[index].labels_, x=data[:, 2], y=data[:, 1], filename='zy', xlabel=columns[2], ylabel=columns[1])
 
     df_data = {columns[0]: data[:, 0], columns[1]: data[:, 1], columns[2]: data[:, 2], CLUSTER: k[index].labels_}
     df = pd.DataFrame(data=df_data).sort_values(by=[CLUSTER])
