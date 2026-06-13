@@ -132,7 +132,7 @@ class DS_KMeans(object):
         self.__init_df()
         self.__init_misc()
 
-    def do(self, df: pl.DataFrame):
+    def do(self, df: pl.DataFrame = None):
         if df is None:
             df = get_data()
         self.df_data = df
@@ -150,7 +150,7 @@ class DS_KMeans(object):
             l_index.append(i)
             self.k.append(KMeans(n_clusters=i))
             self.k[-1].fit(data)
-            inertias.append(k[-1].inertia_)
+            inertias.append(self.k[-1].inertia_)
             _labels = self.k[-1].fit_predict(data)
             sil_score.append(silhouette_score(data, _labels))
 

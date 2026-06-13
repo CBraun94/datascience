@@ -3,7 +3,7 @@ DEBUG_PRINT = False
 
 # CONFIG
 CREATE_SUBPLOT = False
-INTERACTIVE = False
+INTERACTIVE = True
 
 # IO
 DIR_OUT = r'/home/chris/dev/datascience/data/output/'
