@@ -33,7 +33,7 @@ def plot_sil(l_index: list, sil_score: list, fig=None, ax=None):
     ax.set_title('silhouette_score')
     ax.set_xlabel('Number of clusters')
     ax.set_ylabel('silhouette_score')
-    ax.set_xticks(l_index)
+    #ax.set_xticks(l_index)
     fig.savefig(fname=_c.DIR_OUT+'sil_score')
 
     if _close:
@@ -84,6 +84,10 @@ def plot_scatter3d(x, y, z, color, filename: str, fig=None, ax=None):
         _close = True
 
     ax.scatter(x, y, z, c=color, cmap='Accent', alpha=_c.ALPHA)
+
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
 
     if _c.INTERACTIVE:
         plt.show()
