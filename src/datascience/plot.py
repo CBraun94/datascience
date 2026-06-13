@@ -67,7 +67,7 @@ def plot_analyze_sil(df_k, df: pl.DataFrame, df_data_clustered: pl.DataFrame, km
     # https://matplotlib.org/stable/gallery/subplots_axes_and_figures/subplots_demo.html
 
     plt.style.use(PLT_STYLE)
-    fig = plt.figure(figsize=(8, 8))
+    fig = plt.figure(figsize=(14, 8))
     fig.suptitle('plot_analyze_sil')
 
     gs = fig.add_gridspec(2, 3, wspace=0.5, hspace=0.5)
@@ -93,7 +93,7 @@ def plot_analyze_sil(df_k, df: pl.DataFrame, df_data_clustered: pl.DataFrame, km
     plot_scatter(color=_color, x=_z, y=_y, filename='zy', fig=fig, ax=ax6, title='zy', xlabel='Source_Three', ylabel='Source_Two')
 
     # fig.tight_layout()
-    fig.subplots_adjust(left=0.125, bottom=0.1, right=0.9, top=0.9, wspace=0.2, hspace=0.2)
+    fig.subplots_adjust(left=0.05, bottom=0.05, right=0.95, top=0.95, wspace=0.05, hspace=0.05)
 
     if filename is not None and filename != '':
         fig.savefig(fname=DIR_OUT+filename)
