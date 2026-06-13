@@ -69,6 +69,8 @@ def sil():
         _labels = k[-1].fit_predict(data)
         sil_score.append(silhouette_score(data, _labels))
 
+    df_k = pl.DataFrame(data={'k': l_index, 'inertias': inertias, 'sil_score': sil_score})
+
     if DEBUG_PRINT:
         print(sil_score)
 
@@ -82,13 +84,13 @@ def sil():
 
     analyze_sil(inertias=inertias, l_index=l_index, sil_score=sil_score, k=k, data=data, columns=columns, index=index)
 
-    p.plot_analyze_sil(df, df_data_clustered, k[index], filename='analyze_sil_all')
+    p.plot_analyze_sil(df_k, df, df_data_clustered, k[index], filename='analyze_sil_all')
 
     r = range(0, index)
     for i in r:
         df_to_plot = df_data_clustered.filter(pl.col(CLUSTER) == i)
 
-        p.plot_analyze_sil(df, df_to_plot, k[index], filename='analyze_sil_cluster_'+str(i))
+        p.plot_analyze_sil(df_k, df, df_to_plot, k[index], filename='analyze_sil_cluster_'+str(i))
 
 
 def analyze_sil(inertias, l_index, sil_score, k, data, columns, index):
