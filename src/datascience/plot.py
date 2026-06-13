@@ -36,7 +36,8 @@ def plot_scatter(color, x, y, filename: str, fig=None, ax=None, title=None, xlab
     plt.style.use(PLT_STYLE)
     if fig is None or ax is None:
         fig, ax = plt.subplots()
-    ax.scatter(x, y, c=color)
+
+    ax.scatter(x, y, c=color, cmap='Accent', alpha=_c.ALPHA)
     ax.set_title(title)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
@@ -62,7 +63,7 @@ def plot_scatter3d(x, y, z, color, filename: str, fig=None, ax=None):
         fig = plt.figure()
         ax = fig.add_subplot(projection='3d')
 
-    ax.scatter(x, y, z, c=color)
+    ax.scatter(x, y, z, c=color, cmap='Accent', alpha=_c.ALPHA)
 
     if filename is not None and filename != '':
         fig.savefig(fname=_c.DIR_OUT+filename)
