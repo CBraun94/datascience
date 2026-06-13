@@ -85,8 +85,9 @@ def plot_scatter3d(x, y, z, color, filename: str, fig=None, ax=None):
 
     ax.scatter(x, y, z, c=color, cmap='Accent', alpha=_c.ALPHA)
 
-    plt.show()
-    fig.show()
+    if _c.INTERACTIVE:
+        plt.show()
+        fig.show()
 
     if filename is not None and filename != '':
         fig.savefig(fname=_c.DIR_OUT+filename)
