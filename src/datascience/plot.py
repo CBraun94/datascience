@@ -54,7 +54,7 @@ def plot_scatter(kmeans, x, y, filename: str, fig=None, ax=None, title=None, xla
         fig.savefig(fname=DIR_OUT+filename)
 
 
-def plot_analyze_sil(df: pl.DataFrame, df_data_clustered: pl.DataFrame):
+def plot_analyze_sil(df: pl.DataFrame, df_data_clustered: pl.DataFrame, kmeans):
     # https://matplotlib.org/stable/gallery/subplots_axes_and_figures/subplots_demo.html
     filename = 'plot_analyze_sil'
     plt.style.use(PLT_STYLE)
@@ -63,6 +63,14 @@ def plot_analyze_sil(df: pl.DataFrame, df_data_clustered: pl.DataFrame):
 
     gs = fig.add_gridspec(2, 3)
     (ax1, ax2, ax3), (ax4, ax5, ax6) = gs.subplots()
+
+    _x = df_data_clustered.to_series(df_data_clustered.get_column_index('Source_One')).to_list()
+    _y = df_data_clustered.to_series(df_data_clustered.get_column_index('Source_Two')).to_list()
+    _z = df_data_clustered.to_series(df_data_clustered.get_column_index('Source_Three')).to_list()
+
+    plot_scatter(kmeans=kmeans, x=_x, y=_y, filename='xy', fig=fig, ax=ax4, title='xy', xlabel='Source_One', ylabel='Source_Two')
+    plot_scatter(kmeans=kmeans, x=_x, y=_z, filename='xz', fig=fig, ax=ax5, title='xz', xlabel='Source_One', ylabel='Source_Three')
+    plot_scatter(kmeans=kmeans, x=_z, y=_y, filename='zy', fig=fig, ax=ax6, title='zy', xlabel='Source_Three', ylabel='Source_Two')
 
     if filename is not None and filename != '':
         fig.savefig(fname=DIR_OUT+filename)

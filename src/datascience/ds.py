@@ -82,7 +82,7 @@ def sil():
 
     analyze_sil(inertias=inertias, l_index=l_index, sil_score=sil_score, k=k, data=data, columns=columns, index=index)
 
-    p.plot_analyze_sil(df, df_data_clustered)
+    p.plot_analyze_sil(df, df_data_clustered, k[index])
 
 
 def analyze_sil(inertias, l_index, sil_score, k, data, columns, index):
