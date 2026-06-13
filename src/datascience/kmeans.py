@@ -125,3 +125,20 @@ def analyze_sil(inertias, l_index, sil_score, k, data, columns, index):
         print(pl.from_pandas(df_m))
 
     df_m.to_excel(_c.DIR_OUT+"output_mean.xlsx", sheet_name=_c.SHEETNAME_OUT)
+
+
+class DS_KMeans(object):
+    def __init__(self):
+        self.__init_df()
+        self.__init_misc()
+
+    def __init_df(self):
+        self.df_data: pl.DataFrame = None
+        self.df_data_clustered: pl.DataFrame = None
+        self.df_cluster: pl.DataFrame = None
+        self.df_k: pl.DataFrame = None
+
+    def __init_misc(self):
+        self.k: list[KMeans] = []
+        self.inertias: list = []
+        self.sil_score: list = []
