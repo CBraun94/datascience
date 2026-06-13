@@ -68,12 +68,15 @@ def sil(df: pl.DataFrame = None):
     df_k = pl.DataFrame(data={_c.K: l_index, _c.INERTIAS: inertias, _c.SIL_SCORE: sil_score})
 
     if _c.DEBUG_PRINT:
+        print(df_k)
         print(sil_score)
 
     index = sil_score.index(max(sil_score))
 
     s = pl.Series(name=_c.CLUSTER, values=k[index].labels_)
+    sb = pl.Series(name=_c.CLUSTER_NAME, values=_c.ERROR_CLUSTER_NAME[:len(k[index].labels_)])
     df_data_clustered = df.insert_column(0, s)
+    df_data_clustered = df.insert_column(1, sb)
 
     if _c.DEBUG_PRINT:
         print(df_data_clustered)

@@ -52,8 +52,8 @@ def plot_bar(x, y, fig=None, ax=None):
     if fig is None or ax is None:
         fig, ax = plt.subplots()
     #ax.bar(x=x, height=y, width=0.01)
-    aaa = list(map(str, y))
-    ax.pie(x, labels=aaa)
+    #aaa = list(map(str, y))
+    ax.pie(x, labels=y)
 
 
 def plot_analyze_sil(df_k, df: pl.DataFrame, df_data_clustered: pl.DataFrame, kmeans, filename):
@@ -75,8 +75,8 @@ def plot_analyze_sil(df_k, df: pl.DataFrame, df_data_clustered: pl.DataFrame, km
     _k = df_k.to_series(df_k.get_column_index(_c.K)).to_list()
     _sil_score = df_k.to_series(df_k.get_column_index(_c.SIL_SCORE)).to_list()
 
-    df_count = df_data_clustered.sort(_c.CLUSTER).group_by(_c.CLUSTER).len()
-    plot_bar(x=df_count.to_series(df_count.get_column_index(_c.LEN)).to_list(), y=df_count.to_series(df_count.get_column_index(_c.CLUSTER)).to_list(), fig=fig, ax=ax3)
+    df_count = df_data_clustered.sort(_c.CLUSTER_NAME).group_by(_c.CLUSTER_NAME).len()
+    plot_bar(x=df_count.to_series(df_count.get_column_index(_c.LEN)).to_list(), y=df_count.to_series(df_count.get_column_index(_c.CLUSTER_NAME)).to_list(), fig=fig, ax=ax3)
 
     plot_elbow(inertias=_inertias, fig=fig, ax=ax1)
     plot_sil(l_index=_k, sil_score=_sil_score, fig=fig, ax=ax2)
