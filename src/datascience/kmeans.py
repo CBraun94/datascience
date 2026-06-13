@@ -143,16 +143,15 @@ class DS_KMeans(object):
         sil_score = []
 
         l_index = []
-        k: list[KMeans] = []
 
         r = range(2, len(data))
 
         for i in r:
             l_index.append(i)
-            k.append(KMeans(n_clusters=i))
-            k[-1].fit(data)
+            self.k.append(KMeans(n_clusters=i))
+            self.k[-1].fit(data)
             inertias.append(k[-1].inertia_)
-            _labels = k[-1].fit_predict(data)
+            _labels = self.k[-1].fit_predict(data)
             sil_score.append(silhouette_score(data, _labels))
 
         self.df_k = pl.DataFrame(data={_c.K: l_index, _c.INERTIAS: inertias, _c.SIL_SCORE: sil_score})
@@ -161,16 +160,21 @@ class DS_KMeans(object):
             print(self.df_k)
             print(sil_score)
 
-        index = sil_score.index(max(sil_score))
+        self.index_sil = sil_score.index(max(sil_score))
+        self.k_sil = self.k[self.index_sil]
+        self.cluster_count = l_index[self.index_sil]
 
-        s = pl.Series(name=_c.CLUSTER, values=k[index].labels_)
-        sb = pl.Series(name=_c.CLUSTER_NAME, values=_c.ERROR_CLUSTER_NAME[:len(k[index].labels_)])
-        df_data_clustered = df.insert_column(0, s)
+        s = pl.Series(name=_c.CLUSTER, values=self.k_sil.labels_)
+        sb = pl.Series(name=_c.CLUSTER_NAME, values=_c.ERROR_CLUSTER_NAME[:len(self.k_sil.labels_)])
+        df_data_clustered = self.df_data.insert_column(0, s)
         df_cname = pl.DataFrame({_c.CLUSTER: range(0, len(_c.ERROR_CLUSTER_NAME)), _c.CLUSTER_NAME: _c.ERROR_CLUSTER_NAME})
         self.df_data_clustered = df_cname.join(other=df_data_clustered, on=_c.CLUSTER)
 
-        df_cluster = df_data_clustered.sort(_c.CLUSTER).group_by(_c.CLUSTER).mean().drop(_c.CLUSTER_NAME)
+        df_cluster = self.df_data_clustered.sort(_c.CLUSTER).group_by(_c.CLUSTER).mean().drop(_c.CLUSTER_NAME)
         self.df_cluster = df_cname.join(other=df_cluster, on=_c.CLUSTER)
+
+    def analyze(self):
+        p.plot_analyze_sil(self.df_k, self.df_data, self.df_data_clustered, self.k_sil, filename='analyze_sil_all', index=self.cluster_count)
 
     def __write_df_to_excel(self, dir=_c.DIR_OUT):
         self.df_k.to_pandas().to_excel(dir+"df_k.xlsx", sheet_name=_c.SHEETNAME_OUT)
@@ -187,3 +191,6 @@ class DS_KMeans(object):
         self.k: list[KMeans] = []
         self.inertias: list = []
         self.sil_score: list = []
+        self.k_sil: KMeans = None
+        self.index_sil = None
+        self.cluster_count = 0
