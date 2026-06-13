@@ -11,6 +11,8 @@ _y = [21, 19, 24, 17, 16, 25, 24, 22, 21, 21]
 
 DIR_OUT = r'data/output/'
 
+PLT_STYLE = 'dark_background'
+
 
 def plot_elbow(inertias: list):
     r = range(1, len(inertias)+1)
@@ -23,7 +25,7 @@ def plot_elbow(inertias: list):
 
 
 def plot_scatter(kmeans, x, y, filename: str, title = None, xlabel = None, ylabel = None):
-    plt.style.use('dark_background')
+    plt.style.use(PLT_STYLE)
     fig, ax = plt.subplots()
     ax.scatter(x, y, c=kmeans.labels_)
     ax.set_title(title)
@@ -31,7 +33,9 @@ def plot_scatter(kmeans, x, y, filename: str, title = None, xlabel = None, ylabe
     ax.set_ylabel(ylabel)
     ax.set_xlim([-1.1, 1.1])
     ax.set_ylim([-1.1, 1.1])
-    fig.savefig(fname=DIR_OUT+filename)
+
+    if filename is not None and filename != '':
+        fig.savefig(fname=DIR_OUT+filename)
 
 
 def get_data():
@@ -62,6 +66,26 @@ def elbow():
         k.append(KMeans(n_clusters=i))
         k[-1].fit(data)
         inertias.append(k[-1].inertia_)
+
+    ccc = []
+    r = range(0, len(inertias)-1)
+    for i in r:
+        aaa = (inertias[i+1]/inertias[i])
+        ccc.append(aaa)
+        print(str(i) + ' ' + str(i+1) + ' ' + str(aaa))
+
+
+    ddd = []
+    r = range(1, len(ccc)-1)
+    for i in r:
+        bbb = ccc[i-1] + ccc[i] + ccc[i+1]
+        bbb = bbb / 3
+        ddd.append(bbb)
+
+        print(str(i-1) + ' ' + str(i) + ' ' + str(i+1) + ' ' + str(bbb))
+
+    print('aaaaaaa')
+    print(max(ddd))
 
     plot_elbow(inertias=inertias)
     plot_scatter(kmeans=k[7], x=data[:, 0], y=data[:, 1], filename='xy', xlabel=columns[0], ylabel=columns[1])
