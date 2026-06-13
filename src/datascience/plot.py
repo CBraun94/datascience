@@ -71,12 +71,12 @@ def plot_analyze_sil(df_k, df: pl.DataFrame, df_data_clustered: pl.DataFrame, km
     _z = df_data_clustered.to_series(df_data_clustered.get_column_index('Source_Three')).to_list()
 
     _color = df_data_clustered.to_series(df_data_clustered.get_column_index(_c.CLUSTER)).to_list()
-    _inertias = df_k.to_series(df_k.get_column_index('inertias')).to_list()
-    _k = df_k.to_series(df_k.get_column_index('k')).to_list()
-    _sil_score = df_k.to_series(df_k.get_column_index('sil_score')).to_list()
+    _inertias = df_k.to_series(df_k.get_column_index(_c.INERTIAS)).to_list()
+    _k = df_k.to_series(df_k.get_column_index(_c.K)).to_list()
+    _sil_score = df_k.to_series(df_k.get_column_index(_c.SIL_SCORE)).to_list()
 
     df_count = df_data_clustered.sort(_c.CLUSTER).group_by(_c.CLUSTER).len()
-    plot_bar(x=df_count.to_series(df_count.get_column_index('len')).to_list(), y=df_count.to_series(df_count.get_column_index(_c.CLUSTER)).to_list(), fig=fig, ax=ax3)
+    plot_bar(x=df_count.to_series(df_count.get_column_index(_c.LEN)).to_list(), y=df_count.to_series(df_count.get_column_index(_c.CLUSTER)).to_list(), fig=fig, ax=ax3)
 
     plot_elbow(inertias=_inertias, fig=fig, ax=ax1)
     plot_sil(l_index=_k, sil_score=_sil_score, fig=fig, ax=ax2)

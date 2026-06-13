@@ -13,8 +13,6 @@ _x = [4, 5, 10, 4, 3, 11, 14, 6, 10, 12]
 _y = [21, 19, 24, 17, 16, 25, 24, 22, 21, 21]
 
 
-
-
 def get_data() -> pl.DataFrame:
     r = None
     import db
@@ -66,7 +64,7 @@ def sil():
         _labels = k[-1].fit_predict(data)
         sil_score.append(silhouette_score(data, _labels))
 
-    df_k = pl.DataFrame(data={'k': l_index, 'inertias': inertias, 'sil_score': sil_score})
+    df_k = pl.DataFrame(data={_c.K: l_index, _c.INERTIAS: inertias, _c.SIL_SCORE: sil_score})
 
     if _c.DEBUG_PRINT:
         print(sil_score)
