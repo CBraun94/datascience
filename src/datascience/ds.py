@@ -82,8 +82,9 @@ def sil():
 
     analyze_sil(inertias=inertias, l_index=l_index, sil_score=sil_score, k=k, data=data, columns=columns, index=index)
 
-    r = range(0, index)
+    p.plot_analyze_sil(df, df_data_clustered, k[index], filename='analyze_sil_all')
 
+    r = range(0, index)
     for i in r:
         df_to_plot = df_data_clustered.filter(pl.col(CLUSTER) == i)
 

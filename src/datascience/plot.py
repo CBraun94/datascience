@@ -70,9 +70,9 @@ def plot_analyze_sil(df: pl.DataFrame, df_data_clustered: pl.DataFrame, kmeans, 
 
     _color = df_data_clustered.to_series(df_data_clustered.get_column_index('cluster')).to_list()
 
-    plot_scatter(color=None, x=_x, y=_y, filename='xy', fig=fig, ax=ax4, title='xy', xlabel='Source_One', ylabel='Source_Two')
-    plot_scatter(color=None, x=_x, y=_z, filename='xz', fig=fig, ax=ax5, title='xz', xlabel='Source_One', ylabel='Source_Three')
-    plot_scatter(color=None, x=_z, y=_y, filename='zy', fig=fig, ax=ax6, title='zy', xlabel='Source_Three', ylabel='Source_Two')
+    plot_scatter(color=_color, x=_x, y=_y, filename='xy', fig=fig, ax=ax4, title='xy', xlabel='Source_One', ylabel='Source_Two')
+    plot_scatter(color=_color, x=_x, y=_z, filename='xz', fig=fig, ax=ax5, title='xz', xlabel='Source_One', ylabel='Source_Three')
+    plot_scatter(color=_color, x=_z, y=_y, filename='zy', fig=fig, ax=ax6, title='zy', xlabel='Source_Three', ylabel='Source_Two')
 
     fig.tight_layout()
 
