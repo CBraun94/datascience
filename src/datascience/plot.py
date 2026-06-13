@@ -1,13 +1,6 @@
 import matplotlib.pyplot as plt
-from matplotlib.ticker import MaxNLocator
-from sklearn.cluster import KMeans
-from sklearn.metrics import silhouette_score
-import numpy as np
-import pandas as pd
 import polars as pl
-
-
-DIR_OUT = r'data/output/'
+import _const as _c
 
 
 PLT_STYLE = 'dark_background'
@@ -22,7 +15,7 @@ def plot_elbow(inertias: list, fig=None, ax=None):
     ax.set_title('Elbow method')
     ax.set_xlabel('Number of clusters')
     ax.set_ylabel('Inertia')
-    fig.savefig(fname=DIR_OUT+'kmeans_elbow')
+    fig.savefig(fname=_c.DIR_OUT+'kmeans_elbow')
     #plt.close()
 
 
@@ -35,7 +28,7 @@ def plot_sil(l_index: list, sil_score: list, fig=None, ax=None):
     ax.set_xlabel('Number of clusters')
     ax.set_ylabel('silhouette_score')
     ax.set_xticks(l_index)
-    fig.savefig(fname=DIR_OUT+'sil_score')
+    fig.savefig(fname=_c.DIR_OUT+'sil_score')
     #plt.close()
 
 
@@ -51,7 +44,7 @@ def plot_scatter(color, x, y, filename: str, fig=None, ax=None, title=None, xlab
     ax.set_ylim([-1.1, 1.1])
 
     if filename is not None and filename != '':
-        fig.savefig(fname=DIR_OUT+filename)
+        fig.savefig(fname=_c.DIR_OUT+filename)
 
 
 def plot_bar(x, y, fig=None, ax=None):
@@ -77,13 +70,13 @@ def plot_analyze_sil(df_k, df: pl.DataFrame, df_data_clustered: pl.DataFrame, km
     _y = df_data_clustered.to_series(df_data_clustered.get_column_index('Source_Two')).to_list()
     _z = df_data_clustered.to_series(df_data_clustered.get_column_index('Source_Three')).to_list()
 
-    _color = df_data_clustered.to_series(df_data_clustered.get_column_index('cluster')).to_list()
+    _color = df_data_clustered.to_series(df_data_clustered.get_column_index(_c.CLUSTER)).to_list()
     _inertias = df_k.to_series(df_k.get_column_index('inertias')).to_list()
     _k = df_k.to_series(df_k.get_column_index('k')).to_list()
     _sil_score = df_k.to_series(df_k.get_column_index('sil_score')).to_list()
 
-    df_count = df_data_clustered.sort('cluster').group_by('cluster').count()
-    plot_bar(x=df_count.to_series(df_count.get_column_index('count')).to_list(), y=df_count.to_series(df_count.get_column_index('cluster')).to_list(), fig=fig, ax=ax3)
+    df_count = df_data_clustered.sort(_c.CLUSTER).group_by(_c.CLUSTER).len()
+    plot_bar(x=df_count.to_series(df_count.get_column_index('len')).to_list(), y=df_count.to_series(df_count.get_column_index(_c.CLUSTER)).to_list(), fig=fig, ax=ax3)
 
     plot_elbow(inertias=_inertias, fig=fig, ax=ax1)
     plot_sil(l_index=_k, sil_score=_sil_score, fig=fig, ax=ax2)
@@ -93,9 +86,9 @@ def plot_analyze_sil(df_k, df: pl.DataFrame, df_data_clustered: pl.DataFrame, km
     plot_scatter(color=_color, x=_z, y=_y, filename='zy', fig=fig, ax=ax6, title='zy', xlabel='Source_Three', ylabel='Source_Two')
 
     # fig.tight_layout()
-    fig.subplots_adjust(left=0.05, bottom=0.05, right=0.95, top=0.95, wspace=0.05, hspace=0.05)
+    fig.subplots_adjust(left=0.125, bottom=0.1, right=0.90, top=0.90, wspace=0.1, hspace=0.1)
 
     if filename is not None and filename != '':
-        fig.savefig(fname=DIR_OUT+filename)
+        fig.savefig(fname=_c.DIR_OUT+filename)
 
     plt.close(fig)
