@@ -76,13 +76,13 @@ def sil():
     index = sil_score.index(max(sil_score))
 
     s = pl.Series(name=CLUSTER, values=k[index].labels_)
-    df = df.insert_column(0, s)
+    df_data_clustered = df.insert_column(0, s)
 
-    print(df)
+    print(df_data_clustered)
 
     analyze_sil(inertias=inertias, l_index=l_index, sil_score=sil_score, k=k, data=data, columns=columns, index=index)
 
-    p.plot_analyze_sil(df)
+    p.plot_analyze_sil(df, df_data_clustered)
 
 
 def analyze_sil(inertias, l_index, sil_score, k, data, columns, index):
@@ -107,25 +107,7 @@ def analyze_sil(inertias, l_index, sil_score, k, data, columns, index):
     df_m.to_excel(DIR_OUT+"output_mean.xlsx", sheet_name=SHEETNAME_OUT)
 
 
-def two():
-    kmeans_kwargs = {
-        "init": "random",
-        "n_init": 10,
-        "max_iter": 300,
-        "random_state": 42,
-    }
-    silhouette_coefficients = []
-
-    for k in range(2, 11):
-        kmeans = KMeans(n_clusters=k, **kmeans_kwargs)
-        kmeans.fit(scaled_features)
-        score = silhouette_score(scaled_features, kmeans.labels_)
-        silhouette_coefficients.append(score)
-
-
 def main():
-    print('main')
-    #elbow()
     sil()
 
 

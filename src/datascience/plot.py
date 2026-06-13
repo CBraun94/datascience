@@ -54,7 +54,7 @@ def plot_scatter(kmeans, x, y, filename: str, fig=None, ax=None, title=None, xla
         fig.savefig(fname=DIR_OUT+filename)
 
 
-def plot_analyze_sil(df: pl.DataFrame):
+def plot_analyze_sil(df: pl.DataFrame, df_data_clustered: pl.DataFrame):
     # https://matplotlib.org/stable/gallery/subplots_axes_and_figures/subplots_demo.html
     filename = 'plot_analyze_sil'
     plt.style.use(PLT_STYLE)
