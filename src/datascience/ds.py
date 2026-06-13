@@ -15,11 +15,15 @@ DIR_OUT = r'data/output/'
 
 CLUSTER = 'cluster'
 
+DF_DS_NAME = 'test'
+
+SHEETNAME_OUT = "Sheet_name_1"
+
 
 def get_data() -> pl.DataFrame:
     r = None
     import db
-    df = db.DataFrame('test')
+    df = db.DataFrame(DF_DS_NAME)
     df.read(db.OUT)
     df.write(db.OUT)
     if df.df is not None:
@@ -93,14 +97,14 @@ def analyze_sil(inertias, l_index, sil_score, k, data, columns, index):
 
     print(pl.from_pandas(df))
 
-    df.to_excel(DIR_OUT+"output.xlsx", sheet_name="Sheet_name_1")
+    df.to_excel(DIR_OUT+"output.xlsx", sheet_name=SHEETNAME_OUT)
 
     df_m = df.groupby(CLUSTER).mean()
     #df_m = df.groupby('cluster').agg(['mean', 'count'])
 
     print(pl.from_pandas(df_m))
 
-    df_m.to_excel(DIR_OUT+"output_mean.xlsx", sheet_name="Sheet_name_1")
+    df_m.to_excel(DIR_OUT+"output_mean.xlsx", sheet_name=SHEETNAME_OUT)
 
 
 def two():
