@@ -56,6 +56,18 @@ def plot_bar(x, y, fig=None, ax=None):
     ax.pie(x, labels=y)
 
 
+def plot_scatter3d(x, y, z, color, filename: str, fig=None, ax=None):
+    plt.style.use(PLT_STYLE)
+    if fig is None or ax is None:
+        fig = plt.figure()
+        ax = fig.add_subplot(projection='3d')
+
+    ax.scatter(x, y, z, c=color)
+
+    if filename is not None and filename != '':
+        fig.savefig(fname=_c.DIR_OUT+filename)
+
+
 def plot_analyze_sil(df_k, df: pl.DataFrame, df_data_clustered: pl.DataFrame, kmeans: KMeans, filename, index):
     # https://matplotlib.org/stable/gallery/subplots_axes_and_figures/subplots_demo.html
 
@@ -84,6 +96,9 @@ def plot_analyze_sil(df_k, df: pl.DataFrame, df_data_clustered: pl.DataFrame, km
     plot_scatter(color=_color, x=_x, y=_y, filename='xy', fig=fig, ax=ax4, title='xy', xlabel='Source_One', ylabel='Source_Two')
     plot_scatter(color=_color, x=_x, y=_z, filename='xz', fig=fig, ax=ax5, title='xz', xlabel='Source_One', ylabel='Source_Three')
     plot_scatter(color=_color, x=_z, y=_y, filename='zy', fig=fig, ax=ax6, title='zy', xlabel='Source_Three', ylabel='Source_Two')
+
+    if filename == 'analyze_sil_all':
+        plot_scatter3d(x=_x, y=_y, z=_z, color=_color, filename='scatter3d')
 
     # fig.tight_layout()
     fig.subplots_adjust(left=0.125, bottom=0.1, right=0.90, top=0.90, wspace=0.1, hspace=0.1)
