@@ -12,12 +12,10 @@ _x = [4, 5, 10, 4, 3, 11, 14, 6, 10, 12]
 _y = [21, 19, 24, 17, 16, 25, 24, 22, 21, 21]
 
 DIR_OUT = r'data/output/'
-
 CLUSTER = 'cluster'
-
 DF_DS_NAME = 'test'
-
 SHEETNAME_OUT = "Sheet_name_1"
+DEBUG_PRINT = False
 
 
 def get_data() -> pl.DataFrame:
@@ -71,14 +69,16 @@ def sil():
         _labels = k[-1].fit_predict(data)
         sil_score.append(silhouette_score(data, _labels))
 
-    print(sil_score)
+    if DEBUG_PRINT:
+        print(sil_score)
 
     index = sil_score.index(max(sil_score))
 
     s = pl.Series(name=CLUSTER, values=k[index].labels_)
     df_data_clustered = df.insert_column(0, s)
 
-    print(df_data_clustered)
+    if DEBUG_PRINT:
+        print(df_data_clustered)
 
     analyze_sil(inertias=inertias, l_index=l_index, sil_score=sil_score, k=k, data=data, columns=columns, index=index)
 
@@ -95,14 +95,16 @@ def analyze_sil(inertias, l_index, sil_score, k, data, columns, index):
     df_data = {columns[0]: data[:, 0], columns[1]: data[:, 1], columns[2]: data[:, 2], CLUSTER: k[index].labels_}
     df = pd.DataFrame(data=df_data).sort_values(by=[CLUSTER])
 
-    print(pl.from_pandas(df))
+    if DEBUG_PRINT:
+        print(pl.from_pandas(df))
 
     df.to_excel(DIR_OUT+"output.xlsx", sheet_name=SHEETNAME_OUT)
 
     df_m = df.groupby(CLUSTER).mean()
     #df_m = df.groupby('cluster').agg(['mean', 'count'])
 
-    print(pl.from_pandas(df_m))
+    if DEBUG_PRINT:
+        print(pl.from_pandas(df_m))
 
     df_m.to_excel(DIR_OUT+"output_mean.xlsx", sheet_name=SHEETNAME_OUT)
 
