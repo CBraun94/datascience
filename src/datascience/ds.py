@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
 import numpy as np
 
 
@@ -21,6 +23,17 @@ def plot_elbow(inertias: list):
     plt.xlabel('Number of clusters')
     plt.ylabel('Inertia')
     plt.savefig(fname=DIR_OUT+'kmeans_elbow')
+    plt.close()
+
+
+def plot_sil(l_index: list, sil_score: list):
+    plt.plot()
+    plt.plot(l_index, sil_score, marker='o')
+    plt.title('silhouette_score')
+    plt.xlabel('Number of clusters')
+    plt.ylabel('silhouette_score')
+    plt.xticks(l_index)
+    plt.savefig(fname=DIR_OUT+'sil_score')
     plt.close()
 
 
@@ -67,30 +80,39 @@ def elbow():
         k[-1].fit(data)
         inertias.append(k[-1].inertia_)
 
-    ccc = []
-    r = range(0, len(inertias)-1)
-    for i in r:
-        aaa = (inertias[i+1]/inertias[i])
-        ccc.append(aaa)
-        print(str(i) + ' ' + str(i+1) + ' ' + str(aaa))
-
-
-    ddd = []
-    r = range(1, len(ccc)-1)
-    for i in r:
-        bbb = ccc[i-1] + ccc[i] + ccc[i+1]
-        bbb = bbb / 3
-        ddd.append(bbb)
-
-        print(str(i-1) + ' ' + str(i) + ' ' + str(i+1) + ' ' + str(bbb))
-
-    print('aaaaaaa')
-    print(max(ddd))
-
     plot_elbow(inertias=inertias)
     plot_scatter(kmeans=k[7], x=data[:, 0], y=data[:, 1], filename='xy', xlabel=columns[0], ylabel=columns[1])
     plot_scatter(kmeans=k[7], x=data[:, 0], y=data[:, 2], filename='xz', xlabel=columns[0], ylabel=columns[2])
     plot_scatter(kmeans=k[7], x=data[:, 2], y=data[:, 1], filename='zy', xlabel=columns[2], ylabel=columns[1])
+
+
+def sil():
+    columns, data = get_data()
+    inertias = []
+    sil_score = []
+
+    l_index = []
+    k: list[KMeans] = []
+
+    r = range(2, len(data))
+
+    for i in r:
+        l_index.append(i)
+        k.append(KMeans(n_clusters=i))
+        k[-1].fit(data)
+        inertias.append(k[-1].inertia_)
+        _labels = k[-1].fit_predict(data)
+        sil_score.append(silhouette_score(data, _labels))
+
+    print(sil_score)
+
+    index = sil_score.index(max(sil_score))
+
+    plot_elbow(inertias=inertias)
+    plot_sil(l_index=l_index, sil_score=sil_score)
+    plot_scatter(kmeans=k[index], x=data[:, 0], y=data[:, 1], filename='xy', xlabel=columns[0], ylabel=columns[1])
+    plot_scatter(kmeans=k[index], x=data[:, 0], y=data[:, 2], filename='xz', xlabel=columns[0], ylabel=columns[2])
+    plot_scatter(kmeans=k[index], x=data[:, 2], y=data[:, 1], filename='zy', xlabel=columns[2], ylabel=columns[1])
 
 
 def two():
@@ -111,7 +133,8 @@ def two():
 
 def main():
     print('main')
-    elbow()
+    #elbow()
+    sil()
 
 
 if __name__ == '__main__':
