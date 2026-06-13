@@ -20,6 +20,7 @@ PLT_STYLE = 'dark_background'
 
 def plot_elbow(inertias: list):
     r = range(1, len(inertias)+1)
+    plt.style.use(PLT_STYLE)
     plt.plot(r, inertias, marker='o')
     plt.title('Elbow method')
     plt.xlabel('Number of clusters')
@@ -29,7 +30,7 @@ def plot_elbow(inertias: list):
 
 
 def plot_sil(l_index: list, sil_score: list):
-    plt.plot()
+    plt.style.use(PLT_STYLE)
     plt.plot(l_index, sil_score, marker='o')
     plt.title('silhouette_score')
     plt.xlabel('Number of clusters')
@@ -48,6 +49,20 @@ def plot_scatter(kmeans, x, y, filename: str, title = None, xlabel = None, ylabe
     ax.set_ylabel(ylabel)
     ax.set_xlim([-1.1, 1.1])
     ax.set_ylim([-1.1, 1.1])
+
+    if filename is not None and filename != '':
+        fig.savefig(fname=DIR_OUT+filename)
+
+
+def plot_analyze_sil():
+    # https://matplotlib.org/stable/gallery/subplots_axes_and_figures/subplots_demo.html
+    filename = 'plot_analyze_sil'
+    plt.style.use(PLT_STYLE)
+    fig = plt.figure()
+    fig.suptitle('plot_analyze_sil')
+
+    gs = fig.add_gridspec(2, 3)
+    (ax1, ax2, ax3), (ax4, ax5, ax6) = gs.subplots()
 
     if filename is not None and filename != '':
         fig.savefig(fname=DIR_OUT+filename)
@@ -110,6 +125,12 @@ def sil():
 
     index = sil_score.index(max(sil_score))
 
+    analyze_sil(inertias=inertias, l_index=l_index, sil_score=sil_score, k=k, data=data, columns=columns, index=index)
+
+    plot_analyze_sil()
+
+
+def analyze_sil(inertias, l_index, sil_score, k, data, columns, index):
     plot_elbow(inertias=inertias)
     plot_sil(l_index=l_index, sil_score=sil_score)
     plot_scatter(kmeans=k[index], x=data[:, 0], y=data[:, 1], filename='xy', xlabel=columns[0], ylabel=columns[1])
@@ -119,14 +140,14 @@ def sil():
     df_data = {columns[0]: data[:, 0], columns[1]: data[:, 1], columns[2]: data[:, 2], 'cluster': k[index].labels_}
     df = pd.DataFrame(data=df_data).sort_values(by=["cluster"])
 
-    print(df)
+    print(pl.from_pandas(df))
 
     df.to_excel(DIR_OUT+"output.xlsx", sheet_name="Sheet_name_1")
 
     df_m = df.groupby('cluster').mean()
     #df_m = df.groupby('cluster').agg(['mean', 'count'])
 
-    print(df_m)
+    print(pl.from_pandas(df_m))
 
     df_m.to_excel(DIR_OUT+"output_mean.xlsx", sheet_name="Sheet_name_1")
 
