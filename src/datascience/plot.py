@@ -85,11 +85,14 @@ def plot_scatter3d(x, y, z, color, filename: str, fig=None, ax=None):
 
     ax.scatter(x, y, z, c=color, cmap='Accent', alpha=_c.ALPHA)
 
+    plt.show()
+    fig.show()
+
     if filename is not None and filename != '':
         fig.savefig(fname=_c.DIR_OUT+filename)
 
-    if _close:
-        plt.close(fig=fig)
+    #if _close:
+        #plt.close(fig=fig)
 
 
 def plot_analyze_sil(df_k, df: pl.DataFrame, df_data_clustered: pl.DataFrame, kmeans: KMeans, filename, index):

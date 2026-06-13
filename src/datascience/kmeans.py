@@ -100,7 +100,7 @@ def sil(df: pl.DataFrame = None):
     df_data_clustered.sort(_c.CLUSTER).to_pandas().to_excel(_c.DIR_OUT+"df_data_clustered.xlsx", sheet_name=_c.SHEETNAME_OUT)
     df_cluster.to_pandas().to_excel(_c.DIR_OUT+"df_cluster.xlsx", sheet_name=_c.SHEETNAME_OUT)
 
-    print(k[index].cluster_centers_)
+    #print(k[index].cluster_centers_)
 
 
 def analyze_sil(inertias, l_index, sil_score, k, data, columns, index):

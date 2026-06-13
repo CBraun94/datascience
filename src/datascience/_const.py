@@ -5,8 +5,8 @@ DEBUG_PRINT = False
 CREATE_SUBPLOT = False
 
 # IO
-DIR_OUT = r'data/output/'
-DIR_IN = r'data/input/'
+DIR_OUT = r'/home/chris/dev/datascience/data/output/'
+DIR_IN = r'/home/chris/dev/datascience/data/input/'
 SHEETNAME_OUT = "Sheet_name_1"
 
 # DS/DF
