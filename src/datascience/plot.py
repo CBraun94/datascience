@@ -61,7 +61,7 @@ def plot_analyze_sil(df: pl.DataFrame, df_data_clustered: pl.DataFrame, kmeans):
     fig = plt.figure()
     fig.suptitle('plot_analyze_sil')
 
-    gs = fig.add_gridspec(2, 3)
+    gs = fig.add_gridspec(2, 3, wspace=1, hspace=1)
     (ax1, ax2, ax3), (ax4, ax5, ax6) = gs.subplots()
 
     _x = df_data_clustered.to_series(df_data_clustered.get_column_index('Source_One')).to_list()
