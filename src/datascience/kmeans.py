@@ -132,6 +132,51 @@ class DS_KMeans(object):
         self.__init_df()
         self.__init_misc()
 
+    def do(self, df: pl.DataFrame):
+        if df is None:
+            df = get_data()
+        self.df_data = df
+        columns = self.df_data.columns
+        data = self.df_data.to_numpy()
+
+        inertias = []
+        sil_score = []
+
+        l_index = []
+        k: list[KMeans] = []
+
+        r = range(2, len(data))
+
+        for i in r:
+            l_index.append(i)
+            k.append(KMeans(n_clusters=i))
+            k[-1].fit(data)
+            inertias.append(k[-1].inertia_)
+            _labels = k[-1].fit_predict(data)
+            sil_score.append(silhouette_score(data, _labels))
+
+        self.df_k = pl.DataFrame(data={_c.K: l_index, _c.INERTIAS: inertias, _c.SIL_SCORE: sil_score})
+
+        if _c.DEBUG_PRINT:
+            print(self.df_k)
+            print(sil_score)
+
+        index = sil_score.index(max(sil_score))
+
+        s = pl.Series(name=_c.CLUSTER, values=k[index].labels_)
+        sb = pl.Series(name=_c.CLUSTER_NAME, values=_c.ERROR_CLUSTER_NAME[:len(k[index].labels_)])
+        df_data_clustered = df.insert_column(0, s)
+        df_cname = pl.DataFrame({_c.CLUSTER: range(0, len(_c.ERROR_CLUSTER_NAME)), _c.CLUSTER_NAME: _c.ERROR_CLUSTER_NAME})
+        self.df_data_clustered = df_cname.join(other=df_data_clustered, on=_c.CLUSTER)
+
+        df_cluster = df_data_clustered.sort(_c.CLUSTER).group_by(_c.CLUSTER).mean().drop(_c.CLUSTER_NAME)
+        self.df_cluster = df_cname.join(other=df_cluster, on=_c.CLUSTER)
+
+    def __write_df_to_excel(self, dir=_c.DIR_OUT):
+        self.df_k.to_pandas().to_excel(dir+"df_k.xlsx", sheet_name=_c.SHEETNAME_OUT)
+        self.df_data_clustered.sort(_c.CLUSTER).to_pandas().to_excel(dir+"df_data_clustered.xlsx", sheet_name=_c.SHEETNAME_OUT)
+        self.df_cluster.to_pandas().to_excel(dir+"df_cluster.xlsx", sheet_name=_c.SHEETNAME_OUT)
+
     def __init_df(self):
         self.df_data: pl.DataFrame = None
         self.df_data_clustered: pl.DataFrame = None
