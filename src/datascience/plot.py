@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import polars as pl
 import _const as _c
-
+from sklearn.cluster import KMeans
 
 PLT_STYLE = 'dark_background'
 
@@ -56,12 +56,12 @@ def plot_bar(x, y, fig=None, ax=None):
     ax.pie(x, labels=y)
 
 
-def plot_analyze_sil(df_k, df: pl.DataFrame, df_data_clustered: pl.DataFrame, kmeans, filename):
+def plot_analyze_sil(df_k, df: pl.DataFrame, df_data_clustered: pl.DataFrame, kmeans: KMeans, filename, index):
     # https://matplotlib.org/stable/gallery/subplots_axes_and_figures/subplots_demo.html
 
     plt.style.use(PLT_STYLE)
     fig = plt.figure(figsize=(14, 8))
-    fig.suptitle('plot_analyze_sil')
+    fig.suptitle(str(index) + ' Cluster Analysis')
 
     gs = fig.add_gridspec(2, 3, wspace=0.5, hspace=0.5)
     (ax1, ax2, ax3), (ax4, ax5, ax6) = gs.subplots()

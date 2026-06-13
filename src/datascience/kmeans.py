@@ -76,20 +76,30 @@ def sil(df: pl.DataFrame = None):
     s = pl.Series(name=_c.CLUSTER, values=k[index].labels_)
     sb = pl.Series(name=_c.CLUSTER_NAME, values=_c.ERROR_CLUSTER_NAME[:len(k[index].labels_)])
     df_data_clustered = df.insert_column(0, s)
-    df_data_clustered = df.insert_column(1, sb)
+    df_cname = pl.DataFrame({_c.CLUSTER: range(0, len(_c.ERROR_CLUSTER_NAME)), _c.CLUSTER_NAME: _c.ERROR_CLUSTER_NAME})
+    df_data_clustered = df_cname.join(other=df_data_clustered, on=_c.CLUSTER)
+
+    df_cluster = df_data_clustered.sort(_c.CLUSTER).group_by(_c.CLUSTER).mean().drop(_c.CLUSTER_NAME)
+    df_cluster = df_cname.join(other=df_cluster, on=_c.CLUSTER)
 
     if _c.DEBUG_PRINT:
         print(df_data_clustered)
 
     analyze_sil(inertias=inertias, l_index=l_index, sil_score=sil_score, k=k, data=data, columns=columns, index=index)
 
-    p.plot_analyze_sil(df_k, df, df_data_clustered, k[index], filename='analyze_sil_all')
+    p.plot_analyze_sil(df_k, df, df_data_clustered, k[index], filename='analyze_sil_all', index=l_index[index])
 
     r = range(0, index)
     for i in r:
         df_to_plot = df_data_clustered.filter(pl.col(_c.CLUSTER) == i)
 
-        p.plot_analyze_sil(df_k, df, df_to_plot, k[index], filename='analyze_sil_cluster_'+str(i))
+        p.plot_analyze_sil(df_k, df, df_to_plot, k[index], filename='analyze_sil_cluster_'+str(i), index=i)
+
+    df_k.to_pandas().to_excel(_c.DIR_OUT+"df_k.xlsx", sheet_name=_c.SHEETNAME_OUT)
+    df_data_clustered.sort(_c.CLUSTER).to_pandas().to_excel(_c.DIR_OUT+"df_data_clustered.xlsx", sheet_name=_c.SHEETNAME_OUT)
+    df_cluster.to_pandas().to_excel(_c.DIR_OUT+"df_cluster.xlsx", sheet_name=_c.SHEETNAME_OUT)
+
+    print(k[index].cluster_centers_)
 
 
 def analyze_sil(inertias, l_index, sil_score, k, data, columns, index):
