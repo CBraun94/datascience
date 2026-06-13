@@ -123,6 +123,13 @@ def sil():
 
     df.to_excel(DIR_OUT+"output.xlsx", sheet_name="Sheet_name_1")
 
+    df_m = df.groupby('cluster').mean()
+    #df_m = df.groupby('cluster').agg(['mean', 'count'])
+
+    print(df_m)
+
+    df_m.to_excel(DIR_OUT+"output_mean.xlsx", sheet_name="Sheet_name_1")
+
 
 def two():
     kmeans_kwargs = {
