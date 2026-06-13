@@ -89,11 +89,12 @@ def sil(df: pl.DataFrame = None):
 
     p.plot_analyze_sil(df_k, df, df_data_clustered, k[index], filename='analyze_sil_all', index=l_index[index])
 
-    r = range(0, index)
-    for i in r:
-        df_to_plot = df_data_clustered.filter(pl.col(_c.CLUSTER) == i)
+    if _c.CREATE_SUBPLOT:
+        r = range(0, index)
+        for i in r:
+            df_to_plot = df_data_clustered.filter(pl.col(_c.CLUSTER) == i)
 
-        p.plot_analyze_sil(df_k, df, df_to_plot, k[index], filename='analyze_sil_cluster_'+str(i), index=i)
+            p.plot_analyze_sil(df_k, df, df_to_plot, k[index], filename='analyze_sil_cluster_'+str(i), index=i)
 
     df_k.to_pandas().to_excel(_c.DIR_OUT+"df_k.xlsx", sheet_name=_c.SHEETNAME_OUT)
     df_data_clustered.sort(_c.CLUSTER).to_pandas().to_excel(_c.DIR_OUT+"df_data_clustered.xlsx", sheet_name=_c.SHEETNAME_OUT)

@@ -9,33 +9,43 @@ PLT_STYLE = 'dark_background'
 def plot_elbow(inertias: list, fig=None, ax=None):
     r = range(1, len(inertias)+1)
     plt.style.use(PLT_STYLE)
+    _close: bool = False
     if fig is None or ax is None:
         fig, ax = plt.subplots()
+        _close = True
     ax.plot(r, inertias, marker='o')
     ax.set_title('Elbow method')
     ax.set_xlabel('Number of clusters')
     ax.set_ylabel('Inertia')
     fig.savefig(fname=_c.DIR_OUT+'kmeans_elbow')
-    #plt.close()
+
+    if _close:
+        plt.close(fig=fig)
 
 
 def plot_sil(l_index: list, sil_score: list, fig=None, ax=None):
     plt.style.use(PLT_STYLE)
+    _close: bool = False
     if fig is None or ax is None:
         fig, ax = plt.subplots()
+        _close = True
     ax.plot(l_index, sil_score, marker='o')
     ax.set_title('silhouette_score')
     ax.set_xlabel('Number of clusters')
     ax.set_ylabel('silhouette_score')
     ax.set_xticks(l_index)
     fig.savefig(fname=_c.DIR_OUT+'sil_score')
-    #plt.close()
+
+    if _close:
+        plt.close(fig=fig)
 
 
 def plot_scatter(color, x, y, filename: str, fig=None, ax=None, title=None, xlabel=None, ylabel=None):
     plt.style.use(PLT_STYLE)
+    _close: bool = False
     if fig is None or ax is None:
         fig, ax = plt.subplots()
+        _close = True
 
     ax.scatter(x, y, c=color, cmap='Accent', alpha=_c.ALPHA)
     ax.set_title(title)
@@ -47,26 +57,39 @@ def plot_scatter(color, x, y, filename: str, fig=None, ax=None, title=None, xlab
     if filename is not None and filename != '':
         fig.savefig(fname=_c.DIR_OUT+filename)
 
+    if _close:
+        plt.close(fig=fig)
+
 
 def plot_bar(x, y, fig=None, ax=None):
     plt.style.use(PLT_STYLE)
+    _close: bool = False
     if fig is None or ax is None:
         fig, ax = plt.subplots()
+        _close = True
     #ax.bar(x=x, height=y, width=0.01)
     #aaa = list(map(str, y))
     ax.pie(x, labels=y)
 
+    if _close:
+        plt.close(fig=fig)
+
 
 def plot_scatter3d(x, y, z, color, filename: str, fig=None, ax=None):
     plt.style.use(PLT_STYLE)
+    _close: bool = False
     if fig is None or ax is None:
         fig = plt.figure()
         ax = fig.add_subplot(projection='3d')
+        _close = True
 
     ax.scatter(x, y, z, c=color, cmap='Accent', alpha=_c.ALPHA)
 
     if filename is not None and filename != '':
         fig.savefig(fname=_c.DIR_OUT+filename)
+
+    if _close:
+        plt.close(fig=fig)
 
 
 def plot_analyze_sil(df_k, df: pl.DataFrame, df_data_clustered: pl.DataFrame, kmeans: KMeans, filename, index):

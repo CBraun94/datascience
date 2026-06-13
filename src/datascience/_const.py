@@ -1,6 +1,9 @@
 # DEBUG
 DEBUG_PRINT = False
 
+# CONFIG
+CREATE_SUBPLOT = False
+
 # IO
 DIR_OUT = r'data/output/'
 DIR_IN = r'data/input/'
