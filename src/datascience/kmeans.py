@@ -141,27 +141,31 @@ class KMeansDescriptor(object):
 
 
 class KMeansCollection(object):
-    def __init__(self, data):
-        self.data = data
+    def __init__(self, data: pl.DataFrame):
+        self.data: pl.DataFrame = data
         self.kmeans: dict[int, KMeansDescriptor] = {}
         self.sil_score: dict[int] = {}
 
         self.n_clusters_min = 2
         self.n_clusters_max = len(self.data)
-        self.n_clusters_range = range(self.n_clusters_min, len(self.n_clusters_max))
+        self.n_clusters_range = range(self.n_clusters_min, self.n_clusters_max)
 
         self.n_clusters_optimal: int = None
 
     def fit(self):
+        _data = self.data.to_numpy()
         for i in self.n_clusters_range:
-            self.kmeans[i] = KMeansDescriptor(n_clusters=i, data=self.data)
+            self.kmeans[i] = KMeansDescriptor(n_clusters=i, data=_data)
 
-            self.sil_score[i] = self.kmeans[i].kmeans.fit_predict(self.data)
+            self.sil_score[i] = self.kmeans[i].kmeans.fit_predict(_data)
 
         v = list(self.sil_score.values())
         k = list(self.sil_score.keys())
 
         self.n_clusters_optimal = k[v.index(max(v))]
+
+    def kmeans_optimal(self) -> KMeansDescriptor:
+        return self.kmeans[self.n_clusters_optimal]
 
 
 class DS_KMeans(object):
@@ -175,6 +179,8 @@ class DS_KMeans(object):
         self.df_data = df
         columns = self.df_data.columns
         data = self.df_data.to_numpy()
+
+        self.kmeans = KMeansCollection(data=self.df_data)
 
         inertias = []
         sil_score = []
@@ -225,6 +231,7 @@ class DS_KMeans(object):
         self.df_k: pl.DataFrame = None
 
     def __init_misc(self):
+        self.kmeans: KMeansCollection = None
         self.k: list[KMeans] = []
         self.inertias: list = []
         self.sil_score: list = []
