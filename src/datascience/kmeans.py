@@ -2,7 +2,7 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 import pandas as pd
 import polars as pl
-import plot as p
+import _plot as p
 import _const as _c
 
 
