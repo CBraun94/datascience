@@ -75,7 +75,7 @@ def plot_bar(x, y, fig=None, ax=None):
         plt.close(fig=fig)
 
 
-def plot_scatter3d(x, y, z, color, filename: str, fig=None, ax=None):
+def plot_scatter3d(x, y, z, color, filename: str, fig=None, ax=None, labels=None):
     plt.style.use(PLT_STYLE)
     _close: bool = False
     if fig is None or ax is None:
@@ -88,6 +88,11 @@ def plot_scatter3d(x, y, z, color, filename: str, fig=None, ax=None):
     ax.set_xlabel('x')
     ax.set_ylabel('y')
     ax.set_zlabel('z')
+
+    aaa = zip(x, y, z, labels)
+
+    for i in aaa:
+        ax.text3D(x=i[0], y=i[1], z=i[2], s=i[3])
 
     if _c.INTERACTIVE:
         plt.show()
@@ -113,6 +118,7 @@ def plot_analyze_sil(df_k, df: pl.DataFrame, df_data_clustered: pl.DataFrame, km
     _x = df_data_clustered.to_series(df_data_clustered.get_column_index('Source_One')).to_list()
     _y = df_data_clustered.to_series(df_data_clustered.get_column_index('Source_Two')).to_list()
     _z = df_data_clustered.to_series(df_data_clustered.get_column_index('Source_Three')).to_list()
+    _labels = df_data_clustered.to_series(df_data_clustered.get_column_index(_c.CLUSTER_NAME)).to_list()
 
     _color = df_data_clustered.to_series(df_data_clustered.get_column_index(_c.CLUSTER)).to_list()
     _inertias = df_k.to_series(df_k.get_column_index(_c.INERTIAS)).to_list()
@@ -130,7 +136,7 @@ def plot_analyze_sil(df_k, df: pl.DataFrame, df_data_clustered: pl.DataFrame, km
     plot_scatter(color=_color, x=_z, y=_y, filename='zy', fig=fig, ax=ax6, title='zy', xlabel='Source_Three', ylabel='Source_Two')
 
     if filename == 'analyze_sil_all':
-        plot_scatter3d(x=_x, y=_y, z=_z, color=_color, filename='scatter3d')
+        plot_scatter3d(x=_x, y=_y, z=_z, color=_color, filename='scatter3d', labels=_labels)
 
     # fig.tight_layout()
     fig.subplots_adjust(left=0.125, bottom=0.1, right=0.90, top=0.90, wspace=0.1, hspace=0.1)
