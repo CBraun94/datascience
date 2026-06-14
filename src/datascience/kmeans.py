@@ -127,6 +127,43 @@ def analyze_sil(inertias, l_index, sil_score, k, data, columns, index):
     df_m.to_excel(_c.DIR_OUT+"output_mean.xlsx", sheet_name=_c.SHEETNAME_OUT)
 
 
+class KMeansDescriptor(object):
+    def __init__(self, n_clusters, data):
+        self.n_clusters = n_clusters
+        self.data = data
+        self.kmeans: KMeans = None
+
+        self.__init_kmeans()
+
+    def __init_kmeans(self):
+        self.kmeans = KMeans(n_clusters=self.n_clusters)
+        self.kmeans.fit(self.data)
+
+
+class KMeansCollection(object):
+    def __init__(self, data):
+        self.data = data
+        self.kmeans: dict[int, KMeansDescriptor] = {}
+        self.sil_score: dict[int] = {}
+
+        self.n_clusters_min = 2
+        self.n_clusters_max = len(self.data)
+        self.n_clusters_range = range(self.n_clusters_min, len(self.n_clusters_max))
+
+        self.n_clusters_optimal: int = None
+
+    def fit(self):
+        for i in self.n_clusters_range:
+            self.kmeans[i] = KMeansDescriptor(n_clusters=i, data=self.data)
+
+            self.sil_score[i] = self.kmeans[i].kmeans.fit_predict(self.data)
+
+        v = list(self.sil_score.values())
+        k = list(self.sil_score.keys())
+
+        self.n_clusters_optimal = k[v.index(max(v))]
+
+
 class DS_KMeans(object):
     def __init__(self):
         self.__init_df()
@@ -142,19 +179,19 @@ class DS_KMeans(object):
         inertias = []
         sil_score = []
 
-        l_index = []
+        l_cluster_count = []
 
         r = range(2, len(data))
 
         for i in r:
-            l_index.append(i)
+            l_cluster_count.append(i)
             self.k.append(KMeans(n_clusters=i))
             self.k[-1].fit(data)
             inertias.append(self.k[-1].inertia_)
             _labels = self.k[-1].fit_predict(data)
             sil_score.append(silhouette_score(data, _labels))
 
-        self.df_k = pl.DataFrame(data={_c.K: l_index, _c.INERTIAS: inertias, _c.SIL_SCORE: sil_score})
+        self.df_k = pl.DataFrame(data={_c.K: l_cluster_count, _c.INERTIAS: inertias, _c.SIL_SCORE: sil_score})
 
         if _c.DEBUG_PRINT:
             print(self.df_k)
@@ -162,7 +199,7 @@ class DS_KMeans(object):
 
         self.index_sil = sil_score.index(max(sil_score))
         self.k_sil = self.k[self.index_sil]
-        self.cluster_count = l_index[self.index_sil]
+        self.cluster_count = l_cluster_count[self.index_sil]
 
         s = pl.Series(name=_c.CLUSTER, values=self.k_sil.labels_)
         sb = pl.Series(name=_c.CLUSTER_NAME, values=_c.ERROR_CLUSTER_NAME[:len(self.k_sil.labels_)])
