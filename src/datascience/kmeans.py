@@ -143,7 +143,7 @@ class KMeansDescriptor(object):
 class KMeansCollection(object):
     def __init__(self, data: pl.DataFrame):
         self.data: pl.DataFrame = data
-        self.kmeans: dict[int, KMeansDescriptor] = {}
+        self.kmeans: dict[int] = {}
         self.sil_score: dict[int] = {}
 
         self.n_clusters_min = 2
@@ -155,9 +155,9 @@ class KMeansCollection(object):
     def fit(self):
         _data = self.data.to_numpy()
         for i in self.n_clusters_range:
-            self.kmeans[i] = KMeansDescriptor(n_clusters=i, data=_data)
+            self.kmeans[i]['kmeans'] = KMeansDescriptor(n_clusters=i, data=_data)
 
-            self.sil_score[i] = self.kmeans[i].kmeans.fit_predict(_data)
+            self.kmeans[i]['sil_score'] = self.kmeans[i]['kmeans'].kmeans.fit_predict(_data)
 
         v = list(self.sil_score.values())
         k = list(self.sil_score.keys())
